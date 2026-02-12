@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using DiscordBot.Commands;
+using DiscordBot.Cron;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,7 @@ namespace DiscordBot
         DiscordSocketClient _client;
         DiscordRole[] _roles;
         SettingData _settings;
+        CronScheduler? _summaryCron;
 
         Dictionary<string, SocketGuildUser> _userStack = new Dictionary<string, SocketGuildUser>();
 
@@ -57,6 +60,15 @@ namespace DiscordBot
 
             _roles = NotionWrapper.GetDiscordRole();
             Array.Sort(_roles, (a, b) => int.Parse(a.Sort) - int.Parse(b.Sort));
+
+            // 会話まとめCronを開始（毎日22:00に実行）
+            var summaryCommand = new ConversationSummaryCommand(_client, _settings.GuildId);
+            _summaryCron = new CronScheduler(
+                new TimeSpan(22, 0, 0),
+                () => summaryCommand.ExecuteAsync()
+            );
+            _summaryCron.Start();
+            Console.WriteLine("[Bot] 会話まとめCronを開始しました（毎日22:00実行）");
 
             await Task.Delay(Timeout.Infinite);
         }
@@ -165,6 +177,14 @@ namespace DiscordBot
             {
                 //チームを設定してもらう旨をDMする
                 await SendTeamMessage(message.Author);
+            }
+
+            if (message.Content == "まとめ")
+            {
+                // 会話まとめを手動実行
+                var summaryCommand = new ConversationSummaryCommand(_client, _settings.GuildId);
+                await message.Channel.SendMessageAsync("会話まとめを実行中...");
+                await summaryCommand.ExecuteAsync();
             }
         }
 
