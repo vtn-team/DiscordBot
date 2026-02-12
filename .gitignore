@@ -2,3 +2,7 @@
 bin/
 obj/
 packages/
+
+# Node.js
+node_modules/
+.env
