@@ -3,4 +3,5 @@ bin/
 obj/
 packages/
 node_modules/
+nodejs/setting.json
 .env
