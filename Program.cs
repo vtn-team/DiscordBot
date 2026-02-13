@@ -17,7 +17,6 @@ class Program
         public string BotToken;
         public ulong GuildId;
         public ulong ChannelId;
-        public string RoleDatabaseId;
         public string CalendarDBId;
     }
 

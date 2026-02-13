@@ -41,9 +41,8 @@ class RoleAssignBotClient {
       process.exit(1);
     }
 
-    // Notionからロール情報を取得
-    this._roles = await getDiscordRoles();
-    console.log(`${this._roles.length} 個のロールを取得しました。`);
+    // ローカルJSONからロール情報を読み込む
+    this._roles = getDiscordRoles();
 
     // Discordにログイン
     await this._client.login(this._settings.BotToken);
@@ -84,6 +83,22 @@ class RoleAssignBotClient {
 
     if (message.content === 'チーム') {
       await this._sendTeamMessage(message.author);
+    }
+
+    if (message.content === 'ロール一覧') {
+      // Discordサーバーのロール一覧を表示
+      const guild = this._client.guilds.cache.get(this._settings.GuildId);
+      if (guild) {
+        const roles = guild.roles.cache
+          .filter((r) => r.id !== guild.id) // @everyone を除外
+          .sort((a, b) => b.position - a.position);
+
+        let msg = '**Discordサーバーのロール一覧:**\r\n\r\n';
+        roles.forEach((r) => {
+          msg += `- ${r.name} (ID: ${r.id})\r\n`;
+        });
+        await message.channel.send(msg);
+      }
     }
   }
 
