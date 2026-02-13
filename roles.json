@@ -1,61 +1,55 @@
 [
   {
     "RoleName": "チームA",
-    "Emoji": "🔴",
+    "Emoji": "1️⃣",
     "RoleId": "000000000000000001",
     "Sort": "1"
   },
   {
     "RoleName": "チームB",
-    "Emoji": "🔵",
+    "Emoji": "2️⃣",
     "RoleId": "000000000000000002",
     "Sort": "2"
   },
   {
     "RoleName": "チームC",
-    "Emoji": "🟢",
+    "Emoji": "3️⃣",
     "RoleId": "000000000000000003",
     "Sort": "3"
   },
   {
-    "RoleName": "メインジョブ: デザイナー(2D/3D/モーション等共通)",
-    "Emoji": "🎨",
+    "RoleName": "デザイナー(2D/3D共通)",
+    "Emoji": "🧙",
     "RoleId": "000000000000000004",
     "Sort": "10"
   },
   {
-    "RoleName": "メインジョブ: プログラマー",
-    "Emoji": "⌨",
+    "RoleName": "プログラマー",
+    "Emoji": "🦾",
     "RoleId": "000000000000000005",
     "Sort": "11"
   },
   {
-    "RoleName": "メインジョブ: プランナー",
-    "Emoji": "📋",
+    "RoleName": "プランナー",
+    "Emoji": "📝",
     "RoleId": "000000000000000006",
     "Sort": "12"
   },
   {
-    "RoleName": "メインジョブ: サウンド",
-    "Emoji": "🎵",
-    "RoleId": "000000000000000007",
-    "Sort": "13"
-  },
-  {
-    "RoleName": "サブジョブ: エフェクト",
+    "RoleName": "エフェクト",
     "Emoji": "✨",
     "RoleId": "000000000000000008",
     "Sort": "20"
   },
   {
-    "RoleName": "サブジョブ: モーション",
+    "RoleName": "モーション",
     "Emoji": "🏃",
     "RoleId": "000000000000000009",
     "Sort": "21"
   },
   {
-    "RoleName": "サブジョブ: UI",
-    "Emoji": "🖥",
+    "RoleName": "UI",
+    "Emoji": "🎨",
     "RoleId": "000000000000000011",
     "Sort": "23"
   }

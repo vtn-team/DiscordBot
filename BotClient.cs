@@ -106,20 +106,14 @@ namespace DiscordBot
 
         private string GetRoleMessage(string name)
         {
-            string jobMessage = "こんにちは、" + name + "さん！ \r\n**あなたの「担当職種」を教えてください！**\r\n\r\nどの職種でアサインされているかは、以下の資料を確認してください。\r\nhttps://candle-stoplight-544.notion.site/5294189c9dc44dbaa6114629aa007fba?pvs=4\r\n\r\nなお、メインジョブ・サブジョブ共に「これもやりたい」ロールを追加してもかまいません。\r\n\r\n";
-            jobMessage += "----\r\nメインジョブ\r\n\r\n以下の担当職種と一致するリアクションを押してください！\n\n";
+            string jobMessage = "こんにちは、" + name + "さん！ \r\n**あなたの「担当職種」を教えてください！**\r\n\r\n「これもやりたい」ロールを追加してもかまいません。\r\n\r\n";
+            jobMessage += "----\r\n以下の担当職種と一致するリアクションを押してください！\n\n";
             foreach (var r in _roles)
             {
-                if (!r.RoleName.Contains("メインジョブ")) continue;
-                jobMessage += Emoji.Parse(r.Emoji) + " " + r.RoleName.Replace("メインジョブ:","")+ "\r\n";
+                if (r.RoleName.Contains("チーム")) continue;
+                jobMessage += Emoji.Parse(r.Emoji) + " " + r.RoleName + "\r\n";
             }
-            jobMessage += "----\r\n\r\n----\r\nサブジョブ\r\n\r\n";
-            foreach (var r in _roles)
-            {
-                if (!r.RoleName.Contains("サブジョブ")) continue;
-                jobMessage += Emoji.Parse(r.Emoji) + " " + r.RoleName.Replace("サブジョブ:", "") + "\r\n";
-            }
-            jobMessage += "----\r\n\r\n※サブジョブは人数が少なく需要が変動する可能性があるため、チームの垣根を越えてやり取りする可能性があります。\r\n";
+            jobMessage += "----\r\n";
             return jobMessage;
         }
 
@@ -140,7 +134,7 @@ namespace DiscordBot
             var message = await user.SendMessageAsync(GetRoleMessage(user.Username));
             foreach (var r in _roles)
             {
-                if (!r.RoleName.Contains("メインジョブ") && !r.RoleName.Contains("サブジョブ")) continue;
+                if (r.RoleName.Contains("チーム")) continue;
                 await message.AddReactionAsync(Emoji.Parse(r.Emoji));
             }
         }

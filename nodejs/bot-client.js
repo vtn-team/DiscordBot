@@ -170,23 +170,15 @@ class RoleAssignBotClient {
 
   _getRoleMessage(name) {
     let msg = `こんにちは、${name}さん！ \r\n**あなたの「担当職種」を教えてください！**\r\n\r\n`;
-    msg += 'どの職種でアサインされているかは、以下の資料を確認してください。\r\n';
-    msg += 'https://candle-stoplight-544.notion.site/5294189c9dc44dbaa6114629aa007fba?pvs=4\r\n\r\n';
-    msg += 'なお、メインジョブ・サブジョブ共に「これもやりたい」ロールを追加してもかまいません。\r\n\r\n';
+    msg += '「これもやりたい」ロールを追加してもかまいません。\r\n\r\n';
 
-    msg += '----\r\nメインジョブ\r\n\r\n以下の担当職種と一致するリアクションを押してください！\n\n';
+    msg += '----\r\n以下の担当職種と一致するリアクションを押してください！\n\n';
     for (const r of this._roles) {
-      if (!r.RoleName.includes('メインジョブ')) continue;
-      msg += `${r.Emoji} ${r.RoleName.replace('メインジョブ:', '')}\r\n`;
+      if (r.RoleName.includes('チーム')) continue;
+      msg += `${r.Emoji} ${r.RoleName}\r\n`;
     }
 
-    msg += '----\r\n\r\n----\r\nサブジョブ\r\n\r\n';
-    for (const r of this._roles) {
-      if (!r.RoleName.includes('サブジョブ')) continue;
-      msg += `${r.Emoji} ${r.RoleName.replace('サブジョブ:', '')}\r\n`;
-    }
-
-    msg += '----\r\n\r\n※サブジョブは人数が少なく需要が変動する可能性があるため、チームの垣根を越えてやり取りする可能性があります。\r\n';
+    msg += '----\r\n';
     return msg;
   }
 
@@ -201,7 +193,7 @@ class RoleAssignBotClient {
   async _sendRoleMessage(user) {
     const dmMessage = await user.send(this._getRoleMessage(user.username));
     for (const r of this._roles) {
-      if (!r.RoleName.includes('メインジョブ') && !r.RoleName.includes('サブジョブ')) continue;
+      if (r.RoleName.includes('チーム')) continue;
       await dmMessage.react(r.Emoji);
     }
   }
