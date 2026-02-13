@@ -2,6 +2,8 @@
 bin/
 obj/
 packages/
+
+# Node.js
 node_modules/
 nodejs/setting.json
 .env
