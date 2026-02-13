@@ -110,10 +110,10 @@ class RoleAssignBotClient {
       for (const r of this._roles) {
         if (reaction.emoji.name === r.Emoji) {
           const member = await guild.members.fetch(user.id).catch(() => null);
-          if (!member) break;
+          if (!member) continue;
 
           const role = guild.roles.cache.get(r.RoleId);
-          if (!role) break;
+          if (!role) continue;
 
           await member.roles.add(role);
           console.log(`ロール "${role.name}" を ${user.tag} に付与しました。`);
@@ -129,8 +129,7 @@ class RoleAssignBotClient {
           const member = await guild.members.fetch(user.id).catch(() => null);
           if (member) {
             await member.send(
-              'エラーが出ちゃいました。講師かスタッフにエラー内容を問い合わせてください。\r\nエラー内容:\r\n' +
-                err.message
+              'エラーが出ちゃいました。講師かスタッフにお問い合わせください。'
             );
           }
         }
@@ -176,18 +175,26 @@ class RoleAssignBotClient {
   }
 
   async _sendTeamMessage(user) {
-    const dmMessage = await user.send(this._getTeamMessage(user.username));
-    for (const r of this._roles) {
-      if (!r.RoleName.includes('チーム')) continue;
-      await dmMessage.react(r.Emoji);
+    try {
+      const dmMessage = await user.send(this._getTeamMessage(user.username));
+      for (const r of this._roles) {
+        if (!r.RoleName.includes('チーム')) continue;
+        await dmMessage.react(r.Emoji);
+      }
+    } catch (err) {
+      console.error(`チームDM送信エラー (${user.tag}):`, err.message);
     }
   }
 
   async _sendRoleMessage(user) {
-    const dmMessage = await user.send(this._getRoleMessage(user.username));
-    for (const r of this._roles) {
-      if (!r.RoleName.includes('メインジョブ') && !r.RoleName.includes('サブジョブ')) continue;
-      await dmMessage.react(r.Emoji);
+    try {
+      const dmMessage = await user.send(this._getRoleMessage(user.username));
+      for (const r of this._roles) {
+        if (!r.RoleName.includes('メインジョブ') && !r.RoleName.includes('サブジョブ')) continue;
+        await dmMessage.react(r.Emoji);
+      }
+    } catch (err) {
+      console.error(`ロールDM送信エラー (${user.tag}):`, err.message);
     }
   }
 }

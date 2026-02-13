@@ -1,6 +1,6 @@
 const LocalData = require('./local-data');
 
-const API_BASE = 'https://meodtz40k5.execute-api.ap-northeast-1.amazonaws.com/default/GetConfig';
+const DEFAULT_API_BASE = 'https://meodtz40k5.execute-api.ap-northeast-1.amazonaws.com/default/GetConfig';
 
 /**
  * Notion APIからDiscordロール情報を取得する
@@ -13,7 +13,8 @@ async function getDiscordRoles() {
     return [];
   }
 
-  const url = `${API_BASE}/${settings.RoleDatabaseId}/`;
+  const apiBase = settings.ApiBaseUrl || DEFAULT_API_BASE;
+  const url = `${apiBase}/${settings.RoleDatabaseId}/`;
   let json = null;
   let retryCount = 0;
 

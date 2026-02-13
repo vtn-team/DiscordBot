@@ -212,10 +212,10 @@ namespace DiscordBot
 
                         var guild = _client.GetGuild(_settings.GuildId);
                         var user = guild.Users.Where(u => u.Id == reaction.UserId);
-                        if (user.Count() == 0) break;
+                        if (user.Count() == 0) continue;
 
                         var role = guild.Roles.Where(rr => rr.Id == ulong.Parse(r.RoleId));
-                        if (role.Count() == 0) break;
+                        if (role.Count() == 0) continue;
 
                         await user.First().AddRoleAsync(role.First());
                     }
@@ -227,7 +227,7 @@ namespace DiscordBot
                 var user = guild.Users.Where(u => u.Id == reaction.UserId);
                 if (user.Count() > 0)
                 {
-                    await user.First().SendMessageAsync("エラーが出ちゃいました。講師かスタッフにエラー内容を問い合わせてください。\r\nエラー内容:\r\n" + ex.Message);
+                    await user.First().SendMessageAsync("エラーが出ちゃいました。講師かスタッフにお問い合わせください。");
                 }
             }
         }

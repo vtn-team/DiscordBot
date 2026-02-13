@@ -133,7 +133,15 @@ async function handleInvite(service, args) {
   }
 
   const options = parseOptions(args.slice(3));
-  const emails = emailArg.split(",").map((e) => e.trim());
+  const emails = emailArg.split(",").map((e) => e.trim()).filter((e) => e);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  for (const email of emails) {
+    if (!emailRegex.test(email)) {
+      console.error(`エラー: 不正なメールアドレス形式です: ${email}`);
+      process.exit(1);
+    }
+  }
 
   if (emails.length === 1) {
     console.log(`"${emails[0]}" をページに招待中...\n`);
@@ -150,9 +158,14 @@ async function handleInvite(service, args) {
 }
 
 function parseOptions(args) {
+  const validMethods = ["auto", "mention", "property"];
   const options = {};
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--method" && args[i + 1]) {
+      if (!validMethods.includes(args[i + 1])) {
+        console.error(`エラー: 不正なメソッドです: ${args[i + 1]} (有効な値: ${validMethods.join(", ")})`);
+        process.exit(1);
+      }
       options.method = args[i + 1];
       i++;
     } else if (args[i] === "--message" && args[i + 1]) {

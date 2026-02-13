@@ -29,7 +29,13 @@ export class NotionClientWrapper {
     }
 
     const response = await fetch(url, options);
-    const data = await response.json();
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(`Notion API エラー (${response.status}): レスポンスの解析に失敗しました`);
+    }
 
     if (!response.ok) {
       const msg = data.message || data.code || response.statusText;

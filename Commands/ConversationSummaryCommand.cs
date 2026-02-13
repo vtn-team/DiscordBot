@@ -32,6 +32,18 @@ namespace DiscordBot.Commands
         /// </summary>
         public async Task ExecuteAsync()
         {
+            try
+            {
+                await ExecuteInternalAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ConversationSummary] 実行エラー: {ex}");
+            }
+        }
+
+        private async Task ExecuteInternalAsync()
+        {
             var guild = _client.GetGuild(_guildId);
             if (guild == null)
             {
@@ -104,7 +116,7 @@ namespace DiscordBot.Commands
 
                     foreach (var msg in channelMessages)
                     {
-                        var authorName = msg.Author.Username;
+                        var authorName = (msg.Author?.Username ?? "(不明)").Replace("|", "｜");
                         var timestamp = msg.Timestamp.LocalDateTime.ToString("MM/dd HH:mm");
                         var content = TruncateContent(msg.Content);
                         var reactionCount = msg.Reactions.Values.Sum(r => r.ReactionCount);
@@ -164,9 +176,12 @@ namespace DiscordBot.Commands
 
             IMessage? lastMessage = null;
             var keepFetching = true;
+            const int maxPages = 100; // 最大ページ取得数（100件×100ページ = 10,000メッセージ）
+            var pageCount = 0;
 
-            while (keepFetching)
+            while (keepFetching && pageCount < maxPages)
             {
+                pageCount++;
                 IEnumerable<IMessage> messages;
 
                 if (lastMessage == null)

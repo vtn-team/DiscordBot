@@ -8,6 +8,7 @@ const GitHubClient = require("./github");
 // 環境変数のバリデーション
 const requiredEnvVars = [
   "DISCORD_TOKEN",
+  "DISCORD_CLIENT_ID",
   "GITHUB_TOKEN",
   "GITHUB_ORG",
 ];
@@ -51,15 +52,19 @@ client.on(Events.InteractionCreate, async (interaction) => {
   try {
     await command.execute(interaction, githubClient);
   } catch (error) {
-    console.error(`コマンド実行エラー: ${error}`);
-    const reply = {
-      content: "コマンドの実行中にエラーが発生しました。",
-      ephemeral: true,
-    };
-    if (interaction.replied || interaction.deferred) {
-      await interaction.followUp(reply);
-    } else {
-      await interaction.reply(reply);
+    console.error(`コマンド実行エラー:`, error);
+    try {
+      const reply = {
+        content: "コマンドの実行中にエラーが発生しました。",
+        ephemeral: true,
+      };
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp(reply);
+      } else {
+        await interaction.reply(reply);
+      }
+    } catch (replyError) {
+      console.error("エラー応答の送信に失敗しました:", replyError.message);
     }
   }
 });

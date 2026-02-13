@@ -13,6 +13,13 @@ class GitHubClient {
    * @returns {Promise<{success: boolean, message: string}>}
    */
   async inviteUser(org, username, role = "direct_member") {
+    if (!username || !/^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$/.test(username)) {
+      return {
+        success: false,
+        message: `"${username}" は有効なGitHubユーザー名ではありません。`,
+      };
+    }
+
     try {
       // ユーザーのGitHub IDを取得
       const { data: user } = await this.octokit.users.getByUsername({
