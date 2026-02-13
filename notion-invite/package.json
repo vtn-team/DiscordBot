@@ -1,0 +1,12 @@
+{
+  "name": "notion-invite",
+  "version": "1.0.0",
+  "description": "Notionページにユーザーを招待するCLIツール",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "users": "node src/index.js users",
+    "invite": "node src/index.js invite"
+  }
+}
