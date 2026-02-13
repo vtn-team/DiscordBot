@@ -6,3 +6,5 @@ packages/
 # Node.js
 nodejs/node_modules/
 nodejs/setting.json
+node_modules/
+.env
