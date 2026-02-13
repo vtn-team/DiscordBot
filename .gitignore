@@ -2,3 +2,7 @@
 bin/
 obj/
 packages/
+
+# Node.js
+nodejs/node_modules/
+nodejs/setting.json
