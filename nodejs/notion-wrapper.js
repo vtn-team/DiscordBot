@@ -1,51 +1,29 @@
 const LocalData = require('./local-data');
 
-const API_BASE = 'https://meodtz40k5.execute-api.ap-northeast-1.amazonaws.com/default/GetConfig';
-
 /**
- * Notion APIからDiscordロール情報を取得する
- * @returns {Promise<Array>} DiscordRoleオブジェクトの配列
+ * ローカルJSONファイルからDiscordロール情報を読み込む
+ * @returns {Array} DiscordRoleオブジェクトの配列
  */
-async function getDiscordRoles() {
-  const settings = LocalData.load('setting.json');
-  if (!settings || !settings.RoleDatabaseId) {
-    console.error('Error: setting.json が見つからないか、RoleDatabaseId が未設定です。');
+function getDiscordRoles() {
+  const roles = LocalData.load('roles.json');
+  if (!roles) {
+    console.error('Error: roles.json が見つかりません。');
     return [];
   }
 
-  const url = `${API_BASE}/${settings.RoleDatabaseId}/`;
-  let json = null;
-  let retryCount = 0;
-
-  while (json === null) {
-    try {
-      const response = await fetch(url);
-      if (response.ok) {
-        json = await response.text();
-      }
-    } catch (err) {
-      console.error('Request error:', err.message);
-    }
-
-    if (json !== null) break;
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    retryCount++;
-    if (retryCount > 3) {
-      console.error('Error: server error.');
-      return [];
-    }
-  }
-
-  try {
-    const roles = JSON.parse(json);
-    // Sortフィールドで昇順ソート
-    roles.sort((a, b) => parseInt(a.Sort) - parseInt(b.Sort));
-    return roles;
-  } catch (err) {
-    console.error('Error parsing roles JSON:', err.message);
-    return [];
-  }
+  // Sortフィールドで昇順ソート
+  roles.sort((a, b) => parseInt(a.Sort) - parseInt(b.Sort));
+  console.log(`roles.json から ${roles.length} 個のロールを読み込みました。`);
+  return roles;
 }
 
-module.exports = { getDiscordRoles };
+/**
+ * ロール設定をローカルJSONファイルに保存する
+ * @param {Array} roles DiscordRoleオブジェクトの配列
+ */
+function saveDiscordRoles(roles) {
+  LocalData.save('roles.json', roles);
+  console.log(`roles.json に ${roles.length} 個のロールを保存しました。`);
+}
+
+module.exports = { getDiscordRoles, saveDiscordRoles };

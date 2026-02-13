@@ -58,8 +58,8 @@ namespace DiscordBot
             //var discordAPI = new RestAPIWrapper();
             //var roles = discordAPI.GetRoles(settings.GuildId).GetAwaiter().GetResult();
 
-            _roles = NotionWrapper.GetDiscordRole();
-            Array.Sort(_roles, (a, b) => int.Parse(a.Sort) - int.Parse(b.Sort));
+            _roles = RoleLoader.LoadRoles();
+            Console.WriteLine($"[Bot] roles.json から {_roles.Length} 個のロールを読み込みました。");
 
             // 会話まとめCronを開始（毎日22:00に実行）
             var summaryCommand = new ConversationSummaryCommand(_client, _settings.GuildId);
@@ -177,6 +177,27 @@ namespace DiscordBot
             {
                 //チームを設定してもらう旨をDMする
                 await SendTeamMessage(message.Author);
+            }
+
+            if (message.Content == "ロール一覧")
+            {
+                // Discordサーバーのロール一覧を表示
+                var guild = _client.GetGuild(_settings.GuildId);
+                if (guild != null)
+                {
+                    var roles = guild.Roles
+                        .Where(r => !r.IsEveryone)
+                        .OrderByDescending(r => r.Position)
+                        .ToList();
+
+                    var sb = new StringBuilder();
+                    sb.AppendLine("**Discordサーバーのロール一覧:**\r\n");
+                    foreach (var r in roles)
+                    {
+                        sb.AppendLine($"- {r.Name} (ID: {r.Id})");
+                    }
+                    await message.Channel.SendMessageAsync(sb.ToString());
+                }
             }
 
             if (message.Content == "まとめ")
