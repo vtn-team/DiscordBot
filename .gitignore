@@ -6,4 +6,6 @@ packages/
 # Node.js
 node_modules/
 nodejs/setting.json
+conversation-summary/setting.json
+conversation-summary/output/
 .env
